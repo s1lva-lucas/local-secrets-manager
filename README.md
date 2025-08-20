@@ -17,7 +17,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/credential-manager.git
+git clone https://github.com/s1lva-lucas/local-secrets-manager
 cd credential-manager
 
 # Create virtual environment
