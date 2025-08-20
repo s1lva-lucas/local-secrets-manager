@@ -4,22 +4,16 @@ A secure command-line credential storage utility that leverages your system's ke
 
 ## 📦 Installation
 
-### Using UV (Recommended)
-
 [UV](https://github.com/astral-sh/uv) is a fast Python package and project manager written in Rust.
 
+### Install UV
+
 ```bash
-# Create virtual environment if it doesn't exist
-uv venv
-
-# Install keyring directly
-uv pip install keyring
-
-# Run your script
-uv run python secrets_manager.py --help
+# Install UV if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### Using pip
+### Setup Project
 
 ```bash
 # Clone the repository
@@ -27,26 +21,23 @@ git clone https://github.com/yourusername/credential-manager.git
 cd credential-manager
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+uv venv
 
 # Install dependencies
-pip install keyring keyrings.alt
+uv pip install keyring keyrings.alt
 
 # Run the tool
-python secrets_manager.py --help
+uv run python secrets_manager.py --help
 ```
 
 ### Install as Command Line Tool
 
 ```bash
-# With UV
+# Install as editable package
 uv pip install -e .
-uv run credman --help
 
-# With pip
-pip install -e .
-credman --help
+# Run as command
+uv run credman --help
 ```
 
 ## 🚀 Quick Start
@@ -54,28 +45,28 @@ credman --help
 ### Store a credential
 ```bash
 # Store a GitHub token with default prefix "mcp"
-python secrets_manager.py --set -s github -v token
+uv run python secrets_manager.py --set -s github -v token
 
 # Store with custom prefix "prod". The item will be saved as "database" and type "password".
-python secrets_manager.py --set -s database -v password -p prod
+uv run python secrets_manager.py --set -s database -v password -p prod
 ```
 
 ### Retrieve a credential
 ```bash
 # Get a credential
-python secrets_manager.py --get -s github -v token
+uv run python secrets_manager.py --get -s github -v token
 
 # Use in scripts (quiet mode)
-export API_KEY=$(python secrets_manager.py --get -s api -v key -p prod --quiet)
+export API_KEY=$(uv run python secrets_manager.py --get -s api -v key -p prod --quiet)
 ```
 
 ### List operations
 ```bash
 # List all credentials for a prefix
-python secrets_manager.py --list -p prod
+uv run python secrets_manager.py --list -p prod
 
 # List all discovered prefixes
-python secrets_manager.py --list-prefixes
+uv run python secrets_manager.py --list-prefixes
 ```
 
 ## 📖 Usage
@@ -113,23 +104,23 @@ options:
 
 ```bash
 # Store credentials
-./secrets_manager.py --set -s github -v token -p dev
-./secrets_manager.py --set -s aws -v secret_key -p prod
+uv run python secrets_manager.py --set -s github -v token -p dev
+uv run python secrets_manager.py --set -s aws -v secret_key -p prod
 
 # Retrieve credentials
-./secrets_manager.py --get -s github -v token -p dev
+uv run python secrets_manager.py --get -s github -v token -p dev
 
 # Delete a specific credential
-./secrets_manager.py --delete -s github -v token -p dev
+uv run python secrets_manager.py --delete -s github -v token -p dev
 
 # List all credentials for "prod" prefix
-./secrets_manager.py --list -p prod
+uv run python secrets_manager.py --list -p prod
 
 # List all prefixes
-./secrets_manager.py --list-prefixes
+uv run python secrets_manager.py --list-prefixes
 
 # Delete all credentials with prefix "old-app"
-./secrets_manager.py --delete-prefix -p old-app --force
+uv run python secrets_manager.py --delete-prefix -p old-app --force
 ```
 
 ### Shell Integration
@@ -137,12 +128,12 @@ options:
 Add to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# Create an alias
-alias credman='python /path/to/secrets_manager.py'
+# Create an alias using UV
+alias credman='uv run python /path/to/secrets_manager.py'
 
 # Or as a function
 credman() {
-    python /path/to/secrets_manager.py "$@"
+    uv run python /path/to/secrets_manager.py "$@"
 }
 ```
 
@@ -154,7 +145,7 @@ import subprocess
 def get_credential(service, variable, prefix):
     """Get a credential using the credential manager."""
     result = subprocess.run(
-        ["python", "credential-manager.py", 
+        ["uv", "run", "python", "secrets_manager.py", 
          "--get", "-s", service, "-v", variable, "-p", prefix, "--quiet"],
         capture_output=True,
         text=True
@@ -167,19 +158,21 @@ def get_credential(service, variable, prefix):
 api_key = get_credential("database", "password", "prod")
 print(api_key)
 ```
+
 #### Via Wrapper
-```
+```python
 # your_app.py
 from credential_wrapper import CredentialManagerWrapper
 
-# Initialize
-creds = CredentialManagerWrapper(prefix="myapp", use_uv=False)  # Set use_uv=False if not using UV
+# Initialize (UV is default)
+creds = CredentialManagerWrapper(prefix="myapp")  # use_uv=True by default
 
 # Use credentials
 api_key = creds.get("api", "key")
 ```
+
 **Class-Based Integration**
-```
+```python
 # app_with_secrets.py
 from credential_wrapper import CredentialManagerWrapper
 
@@ -213,8 +206,9 @@ app = SecureApp()
 headers = app.get_api_headers()
 db_config = app.get_database_config()
 ```
+
 **Async Integration**
-```
+```python
 # async_wrapper.py
 import asyncio
 from credential_wrapper import CredentialManagerWrapper
@@ -265,8 +259,6 @@ The security of stored credentials depends on your system's keyring backend:
 | Linux (KDE) | KWallet | High - Session encrypted |
 | Fallback | Encrypted file | Medium - Password protected |
 
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
