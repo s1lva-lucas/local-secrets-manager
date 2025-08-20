@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Wrapper for credential_manager.py to use in other Python applications.
+Wrapper for local-secrets-manager.py to use in other Python applications.
 """
 
 import subprocess
@@ -11,14 +11,14 @@ from pathlib import Path
 
 
 class CredentialManagerWrapper:
-    """Wrapper class for credential_manager.py script."""
+    """Wrapper class for local-secrets-manager.py script."""
     
     def __init__(self, script_path: Optional[str] = None, prefix: str = "mcp", use_uv: bool = True):
         """
         Initialize the wrapper.
         
         Args:
-            script_path: Path to credential_manager.py (auto-detects if None)
+            script_path: Path to local-secrets-manager.py (auto-detects if None)
             prefix: Default prefix to use
             use_uv: Whether to use uv run (True) or direct python (False)
         """
@@ -26,10 +26,10 @@ class CredentialManagerWrapper:
             self.script_path = Path(script_path)
         else:
             # Auto-detect script path (same directory as this wrapper)
-            self.script_path = Path(__file__).parent / "credential_manager.py"
+            self.script_path = Path(__file__).parent / "local-secrets-manager.py"
         
         if not self.script_path.exists():
-            raise FileNotFoundError(f"credential_manager.py not found at {self.script_path}")
+            raise FileNotFoundError(f"local-secrets-manager.py not found at {self.script_path}")
         
         self.prefix = prefix
         self.use_uv = use_uv
