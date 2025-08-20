@@ -56,7 +56,7 @@ credman --help
 # Store a GitHub token with default prefix "mcp"
 python local-secrets-manager.py --set -s github -v token
 
-# Store with custom prefix "prod"
+# Store with custom prefix "prod". The item will be saved as "database" and type "password".
 python local-secrets-manager.py --set -s database -v password -p prod
 ```
 
