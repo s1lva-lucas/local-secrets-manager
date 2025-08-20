@@ -166,6 +166,91 @@ def get_credential(service, variable, prefix="mcp"):
 # Usage
 api_key = get_credential("github", "token", "prod")
 ```
+#### Via Wrapper
+```
+# your_app.py
+from credential-wrapper import CredentialManagerWrapper
+
+# Initialize
+creds = CredentialManagerWrapper(prefix="myapp", use_uv=False)  # Set use_uv=False if not using UV
+
+# Use credentials
+api_key = creds.get("api", "key")
+```
+**Class-Based Integration**
+```
+# app_with_secrets.py
+from credential-wrapper import CredentialManagerWrapper
+
+class SecureApp:
+    def __init__(self):
+        self.secrets = CredentialManagerWrapper(prefix="secure-app")
+        
+    def get_api_headers(self):
+        """Build API headers with authentication."""
+        token = self.secrets.get("api", "bearer_token")
+        if not token:
+            raise ValueError("API token not configured")
+        
+        return {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+    
+    def get_database_config(self):
+        """Get database configuration."""
+        return {
+            "host": self.secrets.get("db", "host") or "localhost",
+            "port": self.secrets.get("db", "port") or "5432",
+            "user": self.secrets.get("db", "user") or "postgres",
+            "password": self.secrets.get("db", "password"),
+            "database": self.secrets.get("db", "name") or "myapp"
+        }
+
+# Usage
+app = SecureApp()
+headers = app.get_api_headers()
+db_config = app.get_database_config()
+```
+**Async Integration**
+```
+# async_wrapper.py
+import asyncio
+from credential_wrapper import CredentialManagerWrapper
+
+class AsyncCredentialWrapper:
+    def __init__(self, prefix="mcp"):
+        self.sync_wrapper = CredentialManagerWrapper(prefix=prefix)
+    
+    async def get(self, service: str, variable: str) -> str:
+        """Async wrapper for get operation."""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, 
+            self.sync_wrapper.get, 
+            service, 
+            variable
+        )
+    
+    async def set(self, service: str, variable: str, value: str) -> bool:
+        """Async wrapper for set operation."""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None,
+            self.sync_wrapper.set,
+            service,
+            variable,
+            value
+        )
+
+# Usage
+async def main():
+    creds = AsyncCredentialWrapper(prefix="async-app")
+    token = await creds.get("api", "token")
+    print(f"Token: {token}")
+
+asyncio.run(main())
+```
 
 ## 🔒 Security
 
