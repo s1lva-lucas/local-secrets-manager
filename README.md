@@ -164,11 +164,12 @@ print(api_key)
 # your_app.py
 from credential_wrapper import CredentialManagerWrapper
 
-# Initialize (UV is default)
-creds = CredentialManagerWrapper(prefix="myapp")  # use_uv=True by default
+# Initialize
+creds = CredentialManagerWrapper(use_uv=False)  # Set use_uv=False if not using UV
 
 # Use credentials
-api_key = creds.get("api", "key")
+api_key = creds.get("database", "password", "prod") # Service, variable, prefix
+print(api_key)
 ```
 
 **Class-Based Integration**
