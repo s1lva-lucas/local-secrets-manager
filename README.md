@@ -151,10 +151,10 @@ credman() {
 ```python
 import subprocess
 
-def get_credential(service, variable, prefix="mcp"):
+def get_credential(service, variable, prefix):
     """Get a credential using the credential manager."""
     result = subprocess.run(
-        ["python", "local-secrets-manager.py", 
+        ["python", "credential-manager.py", 
          "--get", "-s", service, "-v", variable, "-p", prefix, "--quiet"],
         capture_output=True,
         text=True
@@ -164,7 +164,8 @@ def get_credential(service, variable, prefix="mcp"):
     return None
 
 # Usage
-api_key = get_credential("github", "token", "prod")
+api_key = get_credential("database", "password", "prod")
+print(api_key)
 ```
 #### Via Wrapper
 ```
