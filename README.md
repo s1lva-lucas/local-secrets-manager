@@ -16,7 +16,7 @@ uv venv
 uv pip install keyring
 
 # Run your script
-uv run python local-secrets-manager.py --help
+uv run python secrets_manager.py --help
 ```
 
 ### Using pip
@@ -34,7 +34,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install keyring keyrings.alt
 
 # Run the tool
-python local-secrets-manager.py --help
+python secrets_manager.py --help
 ```
 
 ### Install as Command Line Tool
@@ -54,34 +54,34 @@ credman --help
 ### Store a credential
 ```bash
 # Store a GitHub token with default prefix "mcp"
-python local-secrets-manager.py --set -s github -v token
+python secrets_manager.py --set -s github -v token
 
 # Store with custom prefix "prod". The item will be saved as "database" and type "password".
-python local-secrets-manager.py --set -s database -v password -p prod
+python secrets_manager.py --set -s database -v password -p prod
 ```
 
 ### Retrieve a credential
 ```bash
 # Get a credential
-python local-secrets-manager.py --get -s github -v token
+python secrets_manager.py --get -s github -v token
 
 # Use in scripts (quiet mode)
-export API_KEY=$(python local-secrets-manager.py --get -s api -v key -p prod --quiet)
+export API_KEY=$(python secrets_manager.py --get -s api -v key -p prod --quiet)
 ```
 
 ### List operations
 ```bash
 # List all credentials for a prefix
-python local-secrets-manager.py --list -p prod
+python secrets_manager.py --list -p prod
 
 # List all discovered prefixes
-python local-secrets-manager.py --list-prefixes
+python secrets_manager.py --list-prefixes
 ```
 
 ## 📖 Usage
 
 ```
-usage: local-secrets-manager.py [-h] (--set | --get | --delete | --list | --list-prefixes | --delete-prefix)
+usage: secrets_manager.py [-h] (--set | --get | --delete | --list | --list-prefixes | --delete-prefix)
                              [--service SERVICE] [--variable VARIABLE] [--prefix PREFIX]
                              [--force] [--quiet] [--debug] [--use-filesystem]
 
@@ -113,23 +113,23 @@ options:
 
 ```bash
 # Store credentials
-./local-secrets-manager.py --set -s github -v token -p dev
-./local-secrets-manager.py --set -s aws -v secret_key -p prod
+./secrets_manager.py --set -s github -v token -p dev
+./secrets_manager.py --set -s aws -v secret_key -p prod
 
 # Retrieve credentials
-./local-secrets-manager.py --get -s github -v token -p dev
+./secrets_manager.py --get -s github -v token -p dev
 
 # Delete a specific credential
-./local-secrets-manager.py --delete -s github -v token -p dev
+./secrets_manager.py --delete -s github -v token -p dev
 
 # List all credentials for "prod" prefix
-./local-secrets-manager.py --list -p prod
+./secrets_manager.py --list -p prod
 
 # List all prefixes
-./local-secrets-manager.py --list-prefixes
+./secrets_manager.py --list-prefixes
 
 # Delete all credentials with prefix "old-app"
-./local-secrets-manager.py --delete-prefix -p old-app --force
+./secrets_manager.py --delete-prefix -p old-app --force
 ```
 
 ### Shell Integration
@@ -138,11 +138,11 @@ Add to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 # Create an alias
-alias credman='python /path/to/local-secrets-manager.py'
+alias credman='python /path/to/secrets_manager.py'
 
 # Or as a function
 credman() {
-    python /path/to/local-secrets-manager.py "$@"
+    python /path/to/secrets_manager.py "$@"
 }
 ```
 
@@ -170,7 +170,7 @@ print(api_key)
 #### Via Wrapper
 ```
 # your_app.py
-from credential-wrapper import CredentialManagerWrapper
+from credential_wrapper import CredentialManagerWrapper
 
 # Initialize
 creds = CredentialManagerWrapper(prefix="myapp", use_uv=False)  # Set use_uv=False if not using UV
@@ -181,7 +181,7 @@ api_key = creds.get("api", "key")
 **Class-Based Integration**
 ```
 # app_with_secrets.py
-from credential-wrapper import CredentialManagerWrapper
+from credential_wrapper import CredentialManagerWrapper
 
 class SecureApp:
     def __init__(self):
